@@ -1,0 +1,2153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#050b16">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mega Multi-Liga Pro</title>
+<script src="./data/snapshot-data.js"></script>
+
+<style>
+:root{
+  --bg:#030814;
+  --bg2:#071426;
+  --surface:#0c182d;
+  --surface2:#11233f;
+  --glass:rgba(13,27,50,.82);
+  --glass2:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.105);
+  --line2:rgba(34,211,238,.22);
+  --text:#f1f7ff;
+  --muted:#97abc9;
+  --muted2:#c7d7ee;
+  --green:#22c55e;
+  --green2:#86efac;
+  --blue:#3b82f6;
+  --blue2:#93c5fd;
+  --cyan:#22d3ee;
+  --teal:#2dd4bf;
+  --amber:#f59e0b;
+  --amber2:#fcd34d;
+  --red:#ef4444;
+  --shadow:0 30px 90px rgba(0,0,0,.48);
+  --shadow-soft:0 16px 42px rgba(0,0,0,.28);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+  background:
+    radial-gradient(circle at 82% -10%,rgba(34,211,238,.24),transparent 28%),
+    radial-gradient(circle at -8% 38%,rgba(45,212,191,.15),transparent 32%),
+    radial-gradient(circle at 65% 115%,rgba(59,130,246,.13),transparent 30%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+}
+
+.app{
+  display:grid;
+  grid-template-columns:390px minmax(0,1fr);
+  gap:30px;
+  max-width:1820px;
+  margin:auto;
+  padding:30px;
+}
+
+.sidebar,.panel,.hero{
+  border:1px solid var(--line);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),
+    var(--glass);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(20px);
+}
+
+.sidebar{
+  position:sticky;
+  top:30px;
+  height:calc(100vh - 60px);
+  overflow:auto;
+  border-radius:36px;
+}
+
+.sidebar::-webkit-scrollbar,
+.table-wrap::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.table-wrap::-webkit-scrollbar-thumb{
+  background:rgba(34,211,238,.28);
+  border-radius:999px;
+}
+
+.brand{
+  padding:30px;
+  border-bottom:1px solid var(--line);
+  background:
+    radial-gradient(circle at top right,rgba(34,211,238,.15),transparent 45%),
+    linear-gradient(135deg,rgba(45,212,191,.14),rgba(59,130,246,.08));
+}
+
+.brand-badge{
+  width:62px;
+  height:62px;
+  border-radius:22px;
+  display:grid;
+  place-items:center;
+  font-weight:1000;
+  color:#04232b;
+  background:linear-gradient(135deg,var(--teal),var(--cyan));
+  box-shadow:0 20px 46px rgba(34,211,238,.26);
+  margin-bottom:18px;
+}
+
+.brand h1{
+  margin:0;
+  font-size:1.9rem;
+  letter-spacing:-.05em;
+}
+
+.brand p{
+  margin:11px 0 0;
+  color:var(--muted);
+  line-height:1.65;
+  font-size:.95rem;
+}
+
+.side-section{
+  padding:24px;
+  border-bottom:1px solid var(--line);
+}
+
+.side-title{
+  font-size:.74rem;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--muted);
+  font-weight:1000;
+  margin-bottom:18px;
+}
+
+label{
+  display:block;
+  color:var(--muted2);
+  font-size:.88rem;
+  margin-bottom:8px;
+  font-weight:700;
+}
+
+select{
+  width:100%;
+  padding:15px 16px;
+  margin-bottom:17px;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:#132543;
+  color:#edf4ff;
+  outline:none;
+  font-size:.96rem;
+  color-scheme:dark;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  transition:.2s ease;
+}
+
+select:hover{
+  border-color:rgba(34,211,238,.35);
+}
+
+select:focus{
+  border-color:rgba(34,211,238,.65);
+  box-shadow:0 0 0 4px rgba(34,211,238,.13);
+}
+
+select option,
+select optgroup{
+  background:#132543;
+  color:#edf4ff;
+}
+
+select option:checked{
+  background:#0f1d34;
+  color:#fff;
+}
+
+.btn{
+  width:100%;
+  border:0;
+  border-radius:18px;
+  padding:15px 16px;
+  font-weight:1000;
+  cursor:pointer;
+  color:#04232b;
+  background:linear-gradient(135deg,var(--teal),var(--cyan));
+  box-shadow:0 18px 44px rgba(34,211,238,.24);
+  transition:.22s ease;
+}
+
+.btn:hover{
+  transform:translateY(-2px);
+  filter:saturate(1.12);
+}
+
+.kpi-list{
+  display:grid;
+  gap:14px;
+}
+
+.kpi-mini{
+  padding:15px 16px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.018));
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+}
+
+.kpi-mini span{
+  color:var(--muted);
+  font-size:.87rem;
+}
+
+.kpi-mini strong{
+  color:#eaffff;
+  font-size:1.03rem;
+  text-align:right;
+}
+
+.main{
+  min-width:0;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  border-radius:40px;
+  padding:40px;
+  margin-bottom:30px;
+  background:
+    linear-gradient(135deg,rgba(45,212,191,.22),rgba(59,130,246,.15)),
+    rgba(255,255,255,.03);
+}
+
+.hero:before{
+  content:"";
+  position:absolute;
+  right:-120px;
+  top:-140px;
+  width:380px;
+  height:380px;
+  border-radius:50%;
+  background:rgba(34,211,238,.18);
+  filter:blur(16px);
+}
+
+.hero h2{
+  position:relative;
+  margin:0 0 12px;
+  font-size:clamp(2.4rem,4vw,4rem);
+  letter-spacing:-.065em;
+}
+
+.hero p{
+  position:relative;
+  margin:0;
+  color:#d7e8ff;
+  line-height:1.7;
+  max-width:980px;
+  font-size:1rem;
+}
+
+.chips{
+  position:relative;
+  display:flex;
+  flex-wrap:wrap;
+  gap:11px;
+  margin-top:24px;
+}
+
+.chip{
+  padding:10px 15px;
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+  color:#eaffff;
+  font-size:.85rem;
+  font-weight:850;
+}
+
+.grid-top{
+  display:grid;
+  grid-template-columns:1.18fr .82fr;
+  gap:30px;
+  margin-bottom:30px;
+}
+
+.panel{
+  border-radius:32px;
+  overflow:hidden;
+  transition:.22s ease;
+}
+
+.panel:hover{
+  transform:translateY(-2px);
+  box-shadow:0 38px 110px rgba(0,0,0,.54);
+}
+
+.panel-head{
+  padding:22px 24px;
+  border-bottom:1px solid var(--line);
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.018));
+}
+
+.panel-head h3{
+  margin:0;
+  font-size:1.08rem;
+  letter-spacing:.01em;
+}
+
+.sub{
+  color:var(--muted);
+  font-size:.9rem;
+  margin-top:7px;
+}
+
+.panel-body{
+  padding:24px;
+}
+
+.teams{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.team-card{
+  border:1px solid var(--line);
+  border-radius:28px;
+  padding:22px;
+  background:
+    radial-gradient(circle at top right,rgba(34,211,238,.10),transparent 38%),
+    linear-gradient(180deg,rgba(255,255,255,.058),rgba(255,255,255,.018));
+  box-shadow:var(--shadow-soft);
+  transition:.22s ease;
+}
+
+.team-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--line2);
+}
+
+.team-top{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom:20px;
+}
+
+.logo{
+  width:72px;
+  height:72px;
+  border-radius:24px;
+  display:grid;
+  place-items:center;
+  color:#fff;
+  font-weight:1000;
+  box-shadow:0 20px 45px rgba(0,0,0,.34);
+}
+
+.team-name{
+  font-size:1.34rem;
+  font-weight:1000;
+  line-height:1.15;
+}
+
+.team-meta{
+  color:var(--muted);
+  font-size:.9rem;
+  margin-top:6px;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.stat{
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:rgba(255,255,255,.038);
+}
+
+.stat span{
+  display:block;
+  color:var(--muted);
+  font-size:.76rem;
+  margin-bottom:8px;
+}
+
+.stat strong{
+  font-size:1.23rem;
+  letter-spacing:-.02em;
+}
+
+.prob-card{
+  display:grid;
+  gap:16px;
+}
+
+.prob-row{
+  display:grid;
+  grid-template-columns:minmax(115px,1fr) 2fr 62px;
+  gap:12px;
+  align-items:center;
+}
+
+.prob-label{
+  font-size:.91rem;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.track,.bar-track{
+  height:16px;
+  border-radius:999px;
+  background:rgba(255,255,255,.085);
+  overflow:hidden;
+  box-shadow:inset 0 1px 4px rgba(0,0,0,.25);
+}
+
+.fill,.bar-fill-a,.bar-fill-b{
+  height:100%;
+  border-radius:999px;
+  transition:width .45s ease;
+}
+
+.fill-a,.bar-fill-a{
+  background:linear-gradient(90deg,var(--green),var(--green2));
+}
+
+.fill-d{
+  background:linear-gradient(90deg,var(--amber),var(--amber2));
+}
+
+.fill-b,.bar-fill-b{
+  background:linear-gradient(90deg,var(--blue),var(--blue2));
+}
+
+.prob-value,.bar-num{
+  text-align:right;
+  font-weight:1000;
+}
+
+.prediction-box{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.058),rgba(255,255,255,.02));
+}
+
+.prediction-main{
+  font-weight:1000;
+  font-size:1.14rem;
+}
+
+.prediction-sub{
+  margin-top:8px;
+  color:var(--muted2);
+  font-size:.91rem;
+  line-height:1.62;
+}
+
+.bars-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+}
+
+.bar-section{
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:25px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.052),rgba(255,255,255,.018));
+  box-shadow:var(--shadow-soft);
+  transition:.22s ease;
+}
+
+.bar-section:hover{
+  transform:translateY(-3px);
+  border-color:var(--line2);
+}
+
+.bar-title{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:15px;
+  align-items:center;
+}
+
+.bar-title strong{
+  font-size:.98rem;
+}
+
+.metric-winner{
+  padding:8px 13px;
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:1000;
+  white-space:nowrap;
+}
+
+.win-a{
+  background:rgba(34,197,94,.17);
+  color:#86efac;
+}
+
+.win-b{
+  background:rgba(59,130,246,.17);
+  color:#93c5fd;
+}
+
+.draw{
+  background:rgba(245,158,11,.17);
+  color:#fcd34d;
+}
+
+.bar-line{
+  display:grid;
+  grid-template-columns:155px 1fr 82px;
+  gap:12px;
+  align-items:center;
+  margin:11px 0;
+}
+
+.bar-name{
+  color:var(--muted);
+  font-size:.87rem;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.table-wrap{
+  overflow:auto;
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow-soft);
+}
+
+table{
+  width:100%;
+  min-width:1280px;
+  border-collapse:collapse;
+}
+
+th,td{
+  padding:15px 16px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+  font-size:.93rem;
+}
+
+thead{
+  background:rgba(255,255,255,.075);
+  position:sticky;
+  top:0;
+  z-index:1;
+}
+
+tbody tr{
+  transition:.15s ease;
+}
+
+tbody tr:hover{
+  background:rgba(34,211,238,.055);
+}
+
+.good{
+  color:#86efac;
+  font-weight:1000;
+}
+
+.bad{
+  color:#fca5a5;
+  font-weight:1000;
+}
+
+.mid{
+  color:#fcd34d;
+  font-weight:1000;
+}
+
+.notice{
+  color:#fcd34d;
+  background:rgba(245,158,11,.12);
+  padding:13px;
+  border-radius:16px;
+  margin-bottom:15px;
+}
+
+.footer-note{
+  color:var(--muted);
+  font-size:.84rem;
+  line-height:1.55;
+  margin-top:14px;
+}
+
+@media(max-width:1280px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;top:auto}
+  .grid-top{grid-template-columns:1fr}
+}
+
+@media(max-width:900px){
+  .app{padding:18px}
+  .teams,.bars-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:640px){
+  .app{padding:14px}
+  .hero{padding:26px}
+  .hero h2{font-size:1.95rem}
+  .panel-body{padding:16px}
+  .prob-row,.bar-line{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .panel:hover,.team-card:hover,.bar-section:hover{transform:none}
+}
+.form-panel{
+  border:1px solid var(--line);
+  border-radius:34px;
+  padding:28px;
+  margin-bottom:30px;
+  background:
+    radial-gradient(circle at center,rgba(34,211,238,.08),transparent 45%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.018)),
+    var(--glass);
+  box-shadow:var(--shadow);
+}
+
+.form-title{
+  font-size:1.3rem;
+  font-weight:1000;
+  margin-bottom:26px;
+}
+
+.form-battle{
+  display:grid;
+  grid-template-columns:280px 1fr 280px;
+  gap:28px;
+  align-items:center;
+}
+
+.form-team{
+  text-align:center;
+}
+
+.form-team.right{
+  text-align:center;
+}
+
+.form-label{
+  font-weight:1000;
+  margin-bottom:14px;
+}
+
+.green{color:#86efac}
+.red{color:#f87171}
+
+.logo.big{
+  width:92px;
+  height:92px;
+  margin:auto;
+  border-radius:28px;
+  font-size:1.4rem;
+}
+
+.form-team h3{
+  margin:14px 0 10px;
+  font-size:1.25rem;
+}
+
+.ppg-box{
+  display:inline-block;
+  padding:12px 18px;
+  border-radius:16px;
+  font-size:1.55rem;
+  font-weight:1000;
+  margin-bottom:12px;
+}
+
+.green-box{
+  background:rgba(34,197,94,.16);
+  color:#86efac;
+  border:1px solid rgba(34,197,94,.35);
+}
+
+.amber-box{
+  background:rgba(245,158,11,.16);
+  color:#fcd34d;
+  border:1px solid rgba(245,158,11,.35);
+}
+
+.form-dots{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+}
+
+.form-dot{
+  width:28px;
+  height:28px;
+  border-radius:8px;
+  display:grid;
+  place-items:center;
+  font-weight:1000;
+  font-size:.78rem;
+}
+
+.dot-g{background:rgba(34,197,94,.8)}
+.dot-e{background:rgba(148,163,184,.7)}
+.dot-p{background:rgba(239,68,68,.8)}
+
+.advantage{
+  text-align:center;
+}
+
+.adv-bar{
+  position:relative;
+  height:18px;
+  border-radius:999px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+  margin-bottom:28px;
+}
+
+.adv-left,.adv-right{
+  position:absolute;
+  top:0;
+  height:100%;
+}
+
+.adv-left{
+  left:0;
+  background:linear-gradient(90deg,var(--green),var(--green2));
+}
+
+.adv-right{
+  right:0;
+  background:linear-gradient(90deg,#fb7185,#ef4444);
+}
+
+.adv-marker{
+  position:absolute;
+  top:-7px;
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  background:var(--cyan);
+  border:4px solid #071426;
+  transform:translateX(-50%);
+}
+
+.advantage h2{
+  margin:0;
+  font-size:1.35rem;
+}
+
+.advantage p{
+  color:var(--muted);
+}
+
+.pro-metrics{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  margin-top:28px;
+}
+
+.metric-card{
+  padding:18px;
+  border-radius:22px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.035);
+  text-align:center;
+}
+
+.metric-card span{
+  display:block;
+  color:var(--muted);
+  font-size:.8rem;
+  margin-bottom:10px;
+}
+
+.metric-card strong{
+  font-size:1.35rem;
+  color:#86efac;
+}
+
+.main-pick{
+  background:linear-gradient(180deg,rgba(34,197,94,.14),rgba(255,255,255,.03));
+  border-color:rgba(34,197,94,.35);
+}
+
+@media(max-width:1100px){
+  .form-battle{
+    grid-template-columns:1fr;
+  }
+
+  .pro-metrics{
+    grid-template-columns:1fr 1fr;
+  }
+}
+
+@media(max-width:640px){
+  .pro-metrics{
+    grid-template-columns:1fr;
+  }
+}
+.h2h-panel{
+  border:1px solid var(--line);
+  border-radius:30px;
+  padding:28px;
+  margin-bottom:30px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025)),
+    var(--glass);
+  box-shadow:var(--shadow);
+}
+
+.h2h-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:18px;
+  margin-bottom:28px;
+}
+
+.h2h-head h3{
+  margin:0;
+  font-size:1.35rem;
+  font-weight:1000;
+}
+
+.h2h-head p{
+  margin:6px 0 0;
+  color:var(--muted);
+}
+
+.h2h-head strong{
+  padding:10px 16px;
+  border-radius:16px;
+  background:rgba(255,255,255,.06);
+  color:#eaffff;
+  border:1px solid var(--line);
+}
+
+.h2h-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:16px;
+  margin-bottom:24px;
+}
+
+.h2h-card{
+  position:relative;
+  overflow:hidden;
+  min-height:120px;
+  padding:20px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.045);
+  box-shadow:0 12px 30px rgba(0,0,0,.22);
+}
+
+.h2h-card:after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:5px;
+  background:#22c55e;
+}
+
+.h2h-card:nth-child(2):after{
+  background:#f59e0b;
+}
+
+.h2h-card:nth-child(3):after{
+  background:#3b82f6;
+}
+
+.h2h-card:nth-child(4):after,
+.h2h-card:nth-child(5):after{
+  background:#22c55e;
+}
+
+.h2h-card span{
+  display:block;
+  color:var(--muted);
+  font-size:.88rem;
+  margin-bottom:12px;
+}
+
+.h2h-card strong{
+  display:block;
+  font-size:2rem;
+  font-weight:1000;
+  color:#f1f7ff;
+  letter-spacing:-.04em;
+}
+
+.h2h-card small{
+  display:block;
+  margin-top:8px;
+  color:var(--muted2);
+}
+
+.draw-card strong{
+  color:#fcd34d;
+}
+
+.h2h-list{
+  margin-top:18px;
+  border:1px solid var(--line);
+  border-radius:20px;
+  overflow:hidden;
+  background:rgba(255,255,255,.025);
+}
+
+.h2h-match{
+  display:grid;
+  grid-template-columns:120px 1fr 90px 1fr 90px;
+  gap:12px;
+  align-items:center;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+}
+
+.h2h-match:last-child{
+  border-bottom:0;
+}
+
+.h2h-match:hover{
+  background:rgba(34,211,238,.055);
+}
+
+.h2h-date{
+  color:var(--muted);
+  font-size:.84rem;
+}
+
+.h2h-score{
+  text-align:center;
+  font-weight:1000;
+  font-size:1rem;
+  color:#071426;
+  background:#67e8f9;
+  border-radius:10px;
+  padding:7px 8px;
+}
+
+.h2h-season{
+  color:var(--muted);
+  text-align:right;
+  font-size:.82rem;
+}
+
+@media(max-width:900px){
+  .h2h-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .h2h-match{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+
+  .h2h-season{
+    text-align:center;
+  }
+}
+
+@media(max-width:520px){
+  .h2h-grid{
+    grid-template-columns:1fr;
+  }
+}
+.h2h-winbar{
+  margin-bottom:24px;
+  padding:18px;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:rgba(255,255,255,.035);
+}
+
+.h2h-winbar-top,
+.h2h-winbar-bottom{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  text-align:center;
+}
+
+.h2h-winbar-top{
+  color:var(--muted);
+  font-size:.86rem;
+  margin-bottom:10px;
+}
+
+.h2h-winbar-bottom{
+  margin-top:10px;
+}
+
+.h2h-winbar-bottom strong{
+  font-size:1.05rem;
+}
+
+.h2h-bar-track{
+  display:flex;
+  height:18px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.08);
+}
+
+.h2h-bar-a{
+  background:linear-gradient(90deg,var(--green),var(--green2));
+}
+
+.h2h-bar-d{
+  background:linear-gradient(90deg,var(--amber),var(--amber2));
+}
+
+.h2h-bar-b{
+  background:linear-gradient(90deg,var(--blue),var(--blue2));
+}
+.score-panel{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+  margin-bottom:30px;
+}
+
+.score-card{
+  border:1px solid var(--line);
+  border-radius:30px;
+  overflow:hidden;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.018)),
+    var(--glass);
+  box-shadow:var(--shadow-soft);
+}
+
+.score-card h3{
+  margin:0;
+  padding:20px 22px;
+  border-bottom:1px solid var(--line);
+  font-size:1.15rem;
+}
+
+.score-card h3 span{
+  color:#67e8f9;
+}
+
+.score-content{
+  display:grid;
+  grid-template-columns:150px 1fr 120px;
+  gap:18px;
+  align-items:center;
+  padding:22px;
+}
+
+.score-side{
+  text-align:center;
+}
+
+.score-logo{
+  width:74px;
+  height:74px;
+  margin:0 auto 10px;
+  border-radius:24px;
+}
+
+.score-side strong{
+  display:block;
+  font-size:.95rem;
+  margin-bottom:6px;
+}
+
+.score-side span{
+  color:var(--muted);
+  font-size:.82rem;
+}
+
+.score-level{
+  font-size:1.45rem;
+  font-weight:1000;
+  color:#86efac;
+  margin-bottom:12px;
+}
+
+.score-bar{
+  height:15px;
+  border-radius:999px;
+  overflow:hidden;
+  background:linear-gradient(90deg,#ef4444,#f59e0b,#22c55e);
+  position:relative;
+}
+
+.score-fill{
+  height:100%;
+  width:0%;
+  border-radius:999px;
+  background:rgba(255,255,255,.45);
+  border-right:3px solid #fff;
+  transition:width .35s ease;
+}
+
+.score-center p{
+  color:var(--muted2);
+  line-height:1.5;
+  margin:12px 0 0;
+  font-size:.9rem;
+}
+
+.score-percent{
+  font-size:2rem;
+  font-weight:1000;
+  color:#86efac;
+}
+
+@media(max-width:1100px){
+  .score-panel{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:700px){
+  .score-content{
+    grid-template-columns:1fr;
+    text-align:center;
+  }
+}
+</style>
+</head>
+
+
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-badge">ML</div>
+      <h1>Mega Liga Pro</h1>
+      <p>Panel offline premium con xG simulado, Poisson, localía y tablas de posiciones.</p>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Configuración</div>
+      <div id="notice"></div>
+
+      <label for="league">Liga</label>
+      <select id="league"></select>
+
+      <label for="teamA">Equipo local</label>
+      <select id="teamA"></select>
+
+      <label for="teamB">Equipo visitante</label>
+      <select id="teamB"></select>
+
+      <button class="btn" id="swapBtn">Intercambiar equipos</button>
+    </div>
+
+    <div class="side-section">
+      <div class="side-title">Resumen rápido</div>
+      <div class="kpi-list">
+        <div class="kpi-mini"><span>Liga activa</span><strong id="sideLeague">—</strong></div>
+        <div class="kpi-mini"><span>Local PPG</span><strong id="sideHomePPG">—</strong></div>
+        <div class="kpi-mini"><span>Visita PPG</span><strong id="sideAwayPPG">—</strong></div>
+        <div class="kpi-mini"><span>Favorito</span><strong id="sideFav">—</strong></div>
+	<div class="kpi-mini"><span>Corners esperados</span><strong id="sideExpectedCorners">—</strong></div>
+	<div class="kpi-mini"><span>Corners local</span><strong id="sideLocalCorners">—</strong></div>
+	<div class="kpi-mini"><span>Corners visitante</span><strong id="sideVisitorCorners">—</strong></div>
+	<div class="kpi-mini"><span>Media corners</span><strong id="sideAvgCorners">—</strong></div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <h2>Dashboard Multi-Liga</h2>
+      <p>Comparación profesional con rendimiento general, local/visitante, probabilidad 1X2 y mercados de goles.</p>
+      <div class="chips">
+        <span class="chip">Sin API</span>
+        <span class="chip">xG simulado</span>
+        <span class="chip">Poisson</span>
+        <span class="chip">Over / Under</span>
+        <span class="chip">Ambos marcan</span>
+      </div>
+    </section>
+<section class="form-panel">
+  <div class="form-title">📈 Forma actual ¿Quién ganará?</div>
+
+  <div class="form-battle">
+    <div class="form-team">
+      <div class="form-label green">Formulario - Inicio</div>
+      <div class="logo big" id="formLogoA">A</div>
+      <h3 id="formNameA">Local</h3>
+      <div class="ppg-box green-box" id="formPPGA">—</div>
+      <div class="form-dots" id="formDotsA"></div>
+    </div>
+
+    <div class="advantage">
+      <div class="adv-bar">
+        <div class="adv-left" id="advLeft"></div>
+        <div class="adv-right" id="advRight"></div>
+        <div class="adv-marker" id="advMarker"></div>
+      </div>
+      <h2 id="advText">—</h2>
+      <p id="advSub">Comparación por puntos por juego, forma, localía y fuerza.</p>
+    </div>
+
+    <div class="form-team right">
+      <div class="form-label red">Formulario - Fuera de casa</div>
+      <div class="logo big" id="formLogoB">B</div>
+      <h3 id="formNameB">Visitante</h3>
+      <div class="ppg-box amber-box" id="formPPGB">—</div>
+      <div class="form-dots" id="formDotsB"></div>
+    </div>
+  </div>
+
+  <div class="pro-metrics">
+    <div class="metric-card"><span>Promedio goles</span><strong id="mGoals">—</strong></div>
+    <div class="metric-card"><span>Ambos marcan</span><strong id="mBTTS">—</strong></div>
+    <div class="metric-card"><span>Over 2.5</span><strong id="mOver25">—</strong></div>
+    <div class="metric-card"><span>Corners esperados</span><strong id="mCorners">—</strong></div>
+    <div class="metric-card main-pick"><span>Predicción principal</span><strong id="mPick">—</strong></div>
+  </div>
+</section>
+
+<section class="h2h-panel">
+  <div class="h2h-head">
+    <div>
+      <h3>Historial H2H</h3>
+      <p id="h2hSubtitle">Enfrentamientos directos históricos</p>
+    </div>
+    <strong id="h2hTotal">— partidos</strong>
+  </div>
+<div class="h2h-winbar">
+  <div class="h2h-winbar-top">
+    <span id="h2hBarLabelA">Local</span>
+    <span>Empate</span>
+    <span id="h2hBarLabelB">Visitante</span>
+  </div>
+
+  <div class="h2h-bar-track">
+    <div class="h2h-bar-a" id="h2hBarA"></div>
+    <div class="h2h-bar-d" id="h2hBarD"></div>
+    <div class="h2h-bar-b" id="h2hBarB"></div>
+  </div>
+
+  <div class="h2h-winbar-bottom">
+    <strong id="h2hPctA">—</strong>
+    <strong id="h2hPctD">—</strong>
+    <strong id="h2hPctB">—</strong>
+  </div>
+</div>
+
+  <div class="h2h-grid">
+    <div class="h2h-card"><span id="h2hTeamA">Local</span><strong id="h2hWinsA">—</strong><small>Victorias</small></div>
+    <div class="h2h-card draw-card"><span>Empates</span><strong id="h2hDraws">—</strong><small>Partidos</small></div>
+    <div class="h2h-card"><span id="h2hTeamB">Visitante</span><strong id="h2hWinsB">—</strong><small>Victorias</small></div>
+    <div class="h2h-card"><span>Over 2.5</span><strong id="h2hOver25">—</strong><small>Goles</small></div>
+    <div class="h2h-card"><span>Ambos marcan</span><strong id="h2hBTTS">—</strong><small>BTTS</small></div>
+  </div>
+
+  <div class="h2h-list" id="h2hMatches"></div>
+</section>
+<section class="score-panel">
+  <div class="score-card">
+    <h3>¿Marcará <span id="scoreTeamA">Local</span>?</h3>
+
+    <div class="score-content">
+      <div class="score-side">
+        <div class="logo score-logo" id="scoreLogoA">A</div>
+        <strong id="scoreNameA">Local</strong>
+        <span id="scoreStatA">xG —</span>
+      </div>
+
+      <div class="score-center">
+        <div class="score-level" id="scoreLevelA">—</div>
+        <div class="score-bar">
+          <div class="score-fill" id="scoreFillA"></div>
+        </div>
+        <p id="scoreTextA">—</p>
+      </div>
+
+      <div class="score-side">
+        <div class="score-percent" id="scorePctA">—</div>
+        <span>probabilidad</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="score-card">
+    <h3>¿Marcará <span id="scoreTeamB">Visitante</span>?</h3>
+
+    <div class="score-content">
+      <div class="score-side">
+        <div class="logo score-logo" id="scoreLogoB">B</div>
+        <strong id="scoreNameB">Visitante</strong>
+        <span id="scoreStatB">xG —</span>
+      </div>
+
+      <div class="score-center">
+        <div class="score-level" id="scoreLevelB">—</div>
+        <div class="score-bar">
+          <div class="score-fill" id="scoreFillB"></div>
+        </div>
+        <p id="scoreTextB">—</p>
+      </div>
+
+      <div class="score-side">
+        <div class="score-percent" id="scorePctB">—</div>
+        <span>probabilidad</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <section class="grid-top">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Comparación directa</h3>
+          <div class="sub" id="leagueName">Liga activa</div>
+        </div>
+        <div class="panel-body">
+          <div class="teams" id="teamCards"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Probabilidad 1X2</h3>
+          <div class="sub">xG + forma + fuerza + localía</div>
+        </div>
+        <div class="panel-body">
+          <div class="prob-card">
+            <div class="prob-row">
+              <div class="prob-label" id="labelA">Local</div>
+              <div class="track"><div class="fill fill-a" id="barProbA"></div></div>
+              <div class="prob-value" id="probA">—</div>
+            </div>
+            <div class="prob-row">
+              <div class="prob-label">Empate</div>
+              <div class="track"><div class="fill fill-d" id="barProbD"></div></div>
+              <div class="prob-value" id="probD">—</div>
+            </div>
+            <div class="prob-row">
+              <div class="prob-label" id="labelB">Visitante</div>
+              <div class="track"><div class="fill fill-b" id="barProbB"></div></div>
+              <div class="prob-value" id="probB">—</div>
+            </div>
+            <div class="prediction-box">
+              <div class="prediction-main" id="predictionMain">—</div>
+              <div class="prediction-sub" id="predictionSub">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-bottom:24px;">
+      <div class="panel-head">
+        <h3>Barras comparativas</h3>
+        <div class="sub">Pts general, local, visita, PPG, DG y win%</div>
+      </div>
+      <div class="panel-body">
+        <div class="bars-grid" id="bars"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h3>Tabla de la liga</h3>
+        <div class="sub">Ranking completo con probabilidad individual</div>
+      </div>
+      <div class="panel-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th><th>Equipo</th><th>PJ</th><th>Pts</th><th>Pts Local</th><th>Pts Visita</th>
+                <th>G</th><th>E</th><th>P</th><th>GF</th><th>GC</th><th>DG</th>
+                <th>PPG</th><th>Win%</th><th>Prob. ganar</th><th>Prob. empatar</th><th>Prob. perder</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+        <div class="footer-note">Las probabilidades son estimaciones internas, no garantías.</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+const RAW_DATA = window.SNAPSHOT_DATA || {};
+const LEAGUE_STATS = window.LEAGUE_STATS || {};
+
+const DATA = Object.keys(RAW_DATA).length ? RAW_DATA : {
+  "Demo":[
+    ["Equipo A","EQA",10,7,2,1,20,8,12,23,14,9,"G-G-E-P-G"],
+    ["Equipo B","EQB",10,5,3,2,16,10,6,18,11,7,"E-G-P-G-E"]
+  ]
+};
+const leagueEl = document.getElementById("league");
+const teamAEl = document.getElementById("teamA");
+const teamBEl = document.getElementById("teamB");
+
+function logoStyle(code){
+  let hash = 0;
+  for(let i=0;i<String(code).length;i++) hash = String(code).charCodeAt(i) + ((hash << 5) - hash);
+  const h1 = Math.abs(hash) % 360;
+  const h2 = (h1 + 55) % 360;
+  return `background:linear-gradient(135deg,hsl(${h1},75%,45%),hsl(${h2},75%,35%));`;
+}
+
+function toTeam(row,index){
+  const [name,code,gp,w,d,l,gf,ga,gd,pts,homePts,awayPts,form] = row;
+  const safePts = +pts || 0;
+
+  return {
+    name:name || "Equipo",
+    code:code || "EQP",
+    pos:index+1,
+    gp:+gp || 0,
+    w:+w || 0,
+    d:+d || 0,
+    l:+l || 0,
+    gf:+gf || 0,
+    ga:+ga || 0,
+    gd:+gd || 0,
+    pts:safePts,
+    homePts:homePts !== undefined ? (+homePts || 0) : Math.round(safePts * .58),
+    awayPts:awayPts !== undefined ? (+awayPts || 0) : Math.round(safePts * .42),
+form: form || "—",
+get ppg(){return this.gp ? this.pts / this.gp : 0},
+    get winRate(){return this.gp ? this.w / this.gp * 100 : 0},
+    get gfpg(){return this.gp ? this.gf / this.gp : 0},
+    get gapg(){return this.gp ? this.ga / this.gp : 0},
+    get homePPG(){return this.homePts / (Math.ceil(this.gp / 2) || 1)},
+    get awayPPG(){return this.awayPts / (Math.floor(this.gp / 2) || 1)}
+  };
+}
+
+function teams(){
+  return (DATA[leagueEl.value] || []).map(toTeam);
+}
+
+function getTeam(name){
+  return teams().find(t => t.name === name);
+}
+
+function fillSelects(){
+  const list = teams();
+  teamAEl.innerHTML = "";
+  teamBEl.innerHTML = "";
+
+  list.forEach(t => {
+    teamAEl.add(new Option(t.name,t.name));
+    teamBEl.add(new Option(t.name,t.name));
+  });
+
+  if(list[0]) teamAEl.value = list[0].name;
+  if(list[1]) teamBEl.value = list[1].name;
+}
+
+function clamp(value,min,max){
+  return Math.max(min, Math.min(max, value));
+}
+
+function poisson(lambda, goals){
+  let factorial = 1;
+  for(let i = 2; i <= goals; i++) factorial *= i;
+  return Math.exp(-lambda) * Math.pow(lambda, goals) / factorial;
+}
+
+function getLeagueStats(){
+  return LEAGUE_STATS[leagueEl.value] || {};
+}
+
+function teamSplits(team){
+  const stats = getLeagueStats();
+  const splits = stats.teamSplits || {};
+  return splits[team.name] || null;
+}
+
+function teamCornerData(team){
+  const stats = getLeagueStats();
+  const corners = stats.teamCorners || {};
+  return corners[team.name] || null;
+}
+
+function formFactor(form){
+  if(!form || form === "—") return 1;
+
+  const results = form.split("-");
+  const weights = [0.7,0.9,1.1,1.3,1.6];
+
+  let points = 0;
+  let maxPoints = 0;
+
+  results.forEach((r,index)=>{
+    const w = weights[index] || 1;
+
+    if(r === "G") points += 3 * w;
+    if(r === "E") points += 1 * w;
+
+    maxPoints += 3 * w;
+  });
+
+  const ratio = maxPoints ? points / maxPoints : 0.5;
+  return 0.60 + ratio * 0.90;
+}
+
+function expectedMatchCorners(a,b){
+  const stats = getLeagueStats();
+  const leagueAvg = stats.avgCorners || 9.5;
+
+  const aCorners = teamCornerData(a);
+  const bCorners = teamCornerData(b);
+
+  if(!aCorners || !bCorners){
+    return {
+      total: leagueAvg,
+      local: leagueAvg / 2,
+      visitor: leagueAvg / 2
+    };
+  }
+
+  const localFor = Number.isFinite(aCorners.homeFor) ? aCorners.homeFor : leagueAvg / 2;
+  const localAgainst = Number.isFinite(aCorners.homeAgainst) ? aCorners.homeAgainst : leagueAvg / 2;
+
+  const visitorFor = Number.isFinite(bCorners.awayFor) ? bCorners.awayFor : leagueAvg / 2;
+  const visitorAgainst = Number.isFinite(bCorners.awayAgainst) ? bCorners.awayAgainst : leagueAvg / 2;
+
+  const local = (localFor + visitorAgainst) / 2;
+  const visitor = (visitorFor + localAgainst) / 2;
+
+  return {
+    total:Number((local + visitor).toFixed(2)),
+    local:Number(local.toFixed(2)),
+    visitor:Number(visitor.toFixed(2))
+  };
+}
+
+function opponentStrength(team){
+  const list = teams();
+  const maxPts = Math.max(...list.map(t => t.pts), 1);
+  const maxTeams = list.length || 1;
+
+  const pointsPower = team.pts / maxPts;
+  const positionPower = (maxTeams - team.pos + 1) / maxTeams;
+  const goalPower = clamp((team.gd + 30) / 60, 0.2, 1.2);
+
+  return clamp(
+    pointsPower * 0.45 + positionPower * 0.35 + goalPower * 0.20,
+    0.35,
+    1.25
+  );
+}
+function matchProb(a,b){
+  const leagueTeams = teams();
+
+  const avgGF = leagueTeams.reduce((sum,t)=>sum + t.gfpg,0) / (leagueTeams.length || 1) || 1.25;
+  const avgGA = leagueTeams.reduce((sum,t)=>sum + t.gapg,0) / (leagueTeams.length || 1) || 1.25;
+
+  const aSplit = teamSplits(a);
+  const bSplit = teamSplits(b);
+
+  const aHomeGF = aSplit?.homeGF ?? a.gfpg;
+  const aHomeGA = aSplit?.homeGA ?? a.gapg;
+
+  const bAwayGF = bSplit?.awayGF ?? b.gfpg;
+  const bAwayGA = bSplit?.awayGA ?? b.gapg;
+
+  const homeAttack = aHomeGF / avgGF || 1;
+  const homeDefense = aHomeGA / avgGA || 1;
+  const awayAttack = bAwayGF / avgGF || 1;
+  const awayDefense = bAwayGA / avgGA || 1;
+const opponentA = opponentStrength(b);
+const opponentB = opponentStrength(a);
+
+const rivalAdjustmentA = clamp(1 + (opponentA - 0.75) * 0.18, 0.92, 1.12);
+const rivalAdjustmentB = clamp(1 + (opponentB - 0.75) * 0.18, 0.92, 1.12);
+
+  const homeForm = clamp(formFactor(a.form), 0.6, 1.5);
+  const awayForm = clamp(formFactor(b.form), 0.6, 1.5);
+
+  const homeLocal = clamp(a.homePPG / Math.max(a.ppg, 0.1), 0.75, 1.35);
+  const awayVisit = clamp(b.awayPPG / Math.max(b.ppg, 0.1), 0.70, 1.30);
+
+  const corners = expectedMatchCorners(a,b);
+  const cornerBoostA = clamp(corners.local / Math.max(corners.total / 2, 0.1), 0.85, 1.18);
+  const cornerBoostB = clamp(corners.visitor / Math.max(corners.total / 2, 0.1), 0.85, 1.18);
+
+  const homeEdge = clamp(1.05 + (a.homePPG - b.awayPPG) * 0.08, 0.95, 1.18);
+
+ const rawXgA =
+  avgGF *
+  homeAttack *
+  awayDefense *
+  homeForm *
+  homeLocal *
+  homeEdge *
+  cornerBoostA *
+  rivalAdjustmentA;
+
+const rawXgB =
+  avgGF *
+  awayAttack *
+  homeDefense *
+  awayForm *
+  awayVisit *
+  0.92 *
+  cornerBoostB *
+  rivalAdjustmentB;
+
+const xgA = clamp(rawXgA, 0.35, 2.85);
+const xgB = clamp(rawXgB, 0.25, 2.55);
+
+  let winA = 0, draw = 0, winB = 0;
+
+  for(let goalsA = 0; goalsA <= 7; goalsA++){
+    for(let goalsB = 0; goalsB <= 7; goalsB++){
+      const probability = poisson(xgA, goalsA) * poisson(xgB, goalsB);
+
+      if(goalsA > goalsB) winA += probability;
+      else if(goalsA === goalsB) draw += probability;
+      else winB += probability;
+    }
+  }
+
+  const total = winA + draw + winB || 1;
+
+  winA = Math.round((winA / total) * 100);
+  draw = Math.round((draw / total) * 100);
+  winB = 100 - winA - draw;
+
+  return {winA,draw,winB,xgA,xgB,corners};
+}
+
+function topScores(xgA,xgB){
+  let results = [];
+  for(let a=0;a<=5;a++){
+    for(let b=0;b<=5;b++){
+      let p = poisson(xgA,a) * poisson(xgB,b);
+      results.push({score:`${a}-${b}`,prob:p});
+    }
+  }
+  results.sort((x,y)=>y.prob - x.prob);
+  return results.slice(0,3).map(r => `${r.score} (${(r.prob*100).toFixed(1)}%)`).join(" · ");
+}
+
+function goalMarkets(xgA,xgB){
+  let over15 = 0;
+  let over25 = 0;
+  let over35 = 0;
+  let btts = 0;
+
+  for(let a = 0; a <= 7; a++){
+    for(let b = 0; b <= 7; b++){
+      const prob = poisson(xgA,a) * poisson(xgB,b);
+      const total = a + b;
+
+      if(total > 1.5) over15 += prob;
+      if(total > 2.5) over25 += prob;
+      if(total > 3.5) over35 += prob;
+      if(a > 0 && b > 0) btts += prob;
+    }
+  }
+
+  return {
+    over15: Math.round(over15 * 100),
+    over25: Math.round(over25 * 100),
+    over35: Math.round(over35 * 100),
+    btts: Math.round(btts * 100)
+  };
+}
+
+function expectedScore(xgA,xgB){
+  return `${xgA.toFixed(2)} - ${xgB.toFixed(2)}`;
+}
+
+function tacticalInsight(a,b){
+  let insight = "";
+
+  if(a.gfpg > b.gapg) insight += `${a.name} tiene ventaja ofensiva. `;
+  if(b.gfpg > a.gapg) insight += `${b.name} puede generar peligro. `;
+
+  if(a.homePPG > b.awayPPG){
+    insight += `La localía favorece a ${a.name}.`;
+  } else {
+    insight += `${b.name} compite bien como visitante.`;
+  }
+
+  return insight;
+}
+
+function confidenceLevel(p){
+  const maxProb = Math.max(p.winA, p.draw, p.winB);
+  if(maxProb >= 60) return "Alta";
+  if(maxProb >= 45) return "Media";
+  return "Baja";
+}
+
+function tableProb(t){
+  const maxTeams = teams().length || 1;
+  const positionFactor = (maxTeams - t.pos) / maxTeams;
+
+  let win = Math.round(t.ppg*18 + t.winRate*.30 + t.gd*.6 + positionFactor*25);
+  win = clamp(win,8,72);
+
+  let draw = Math.round(26 - Math.abs(t.ppg - 1.4)*5);
+  draw = clamp(draw,14,32);
+
+  let lose = 100 - win - draw;
+  if(lose < 5){lose = 5; win = 100 - draw - lose;}
+
+  return {win,draw,lose};
+}
+
+function renderCards(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  document.getElementById("leagueName").textContent = leagueEl.value;
+
+  document.getElementById("teamCards").innerHTML = [a,b].map((t,i) => `
+    <div class="team-card">
+      <div class="team-top">
+        <div class="logo" style="${logoStyle(t.code)}">${t.code}</div>
+        <div>
+          <div class="team-name">${t.name}</div>
+          <div class="team-meta">${i === 0 ? "Local" : "Visitante"} · Posición ${t.pos}º</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>Pts</span><strong>${t.pts}</strong></div>
+        <div class="stat"><span>Pts Local</span><strong>${t.homePts}</strong></div>
+        <div class="stat"><span>Pts Visita</span><strong>${t.awayPts}</strong></div>
+        <div class="stat"><span>PPG</span><strong>${t.ppg.toFixed(2)}</strong></div>
+        <div class="stat"><span>DG</span><strong>${t.gd >= 0 ? "+" : ""}${t.gd}</strong></div>
+        <div class="stat"><span>Win%</span><strong>${t.winRate.toFixed(1)}%</strong></div>
+	<div class="stat"><span>Forma</span><strong>${t.form}</strong></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function expectedMatchCorners(a,b){
+  const stats = LEAGUE_STATS[leagueEl.value] || {};
+  const leagueAvg = stats.avgCorners || 9.5;
+
+  const aCorners = teamCornerData(a);
+  const bCorners = teamCornerData(b);
+
+  if(!aCorners || !bCorners){
+    return {
+      total: leagueAvg,
+      local: leagueAvg / 2,
+      visitor: leagueAvg / 2,
+      aFor: null,
+      aAgainst: null,
+      bFor: null,
+      bAgainst: null
+    };
+  }
+
+  const aFor = Number.isFinite(aCorners.for) ? aCorners.for : leagueAvg / 2;
+  const aAgainst = Number.isFinite(aCorners.against) ? aCorners.against : leagueAvg / 2;
+  const bFor = Number.isFinite(bCorners.for) ? bCorners.for : leagueAvg / 2;
+  const bAgainst = Number.isFinite(bCorners.against) ? bCorners.against : leagueAvg / 2;
+
+  const local = (aFor + bAgainst) / 2;
+  const visitor = (bFor + aAgainst) / 2;
+
+  return {
+    total: Number((local + visitor).toFixed(2)),
+    local: Number(local.toFixed(2)),
+    visitor: Number(visitor.toFixed(2)),
+    aFor,
+    aAgainst,
+    bFor,
+    bAgainst
+  };
+}
+
+function renderProb(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  const p = matchProb(a,b);
+const corners = p.corners;
+
+  document.getElementById("labelA").textContent = `Gana ${a.name}`;
+  document.getElementById("labelB").textContent = `Gana ${b.name}`;
+  document.getElementById("probA").textContent = `${p.winA}%`;
+  document.getElementById("probD").textContent = `${p.draw}%`;
+  document.getElementById("probB").textContent = `${p.winB}%`;
+
+  document.getElementById("barProbA").style.width = `${p.winA}%`;
+  document.getElementById("barProbD").style.width = `${p.draw}%`;
+  document.getElementById("barProbB").style.width = `${p.winB}%`;
+
+  let fav = "Empate";
+  if(p.winA > p.draw && p.winA > p.winB) fav = a.name;
+  if(p.winB > p.draw && p.winB > p.winA) fav = b.name;
+
+  document.getElementById("predictionMain").innerHTML =
+    fav === "Empate"
+      ? `🤝 Escenario más probable: <strong>Empate</strong>`
+      : `🏆 Favorito: <strong>${fav}</strong>`;
+
+  const score = topScores(p.xgA, p.xgB);
+  const expected = expectedScore(p.xgA, p.xgB);
+  const confidence = confidenceLevel(p);
+  const insight = tacticalInsight(a,b);
+  const markets = goalMarkets(p.xgA, p.xgB);
+
+  document.getElementById("predictionSub").textContent =
+    `${a.name} xG: ${p.xgA.toFixed(2)} · ${b.name} xG: ${p.xgB.toFixed(2)} · Resultado esperado: ${expected} · Marcadores: ${score} · Confianza: ${confidence} · Over 1.5: ${markets.over15}% · Over 2.5: ${markets.over25}% · Over 3.5: ${markets.over35}% · Ambos marcan: ${markets.btts}% · ${insight}`;
+
+  document.getElementById("sideLeague").textContent = leagueEl.value;
+  document.getElementById("sideHomePPG").textContent = a.homePPG.toFixed(2);
+  document.getElementById("sideAwayPPG").textContent = b.awayPPG.toFixed(2);
+  document.getElementById("sideFav").textContent = fav;
+document.getElementById("sideExpectedCorners").textContent = corners.total.toFixed(2);
+document.getElementById("sideLocalCorners").textContent = corners.local.toFixed(2);
+document.getElementById("sideVisitorCorners").textContent = corners.visitor.toFixed(2);
+const avgCorners = LEAGUE_STATS[leagueEl.value]?.avgCorners;
+
+document.getElementById("sideAvgCorners").textContent =
+  Number.isFinite(avgCorners) ? avgCorners.toFixed(2) : "—";
+}
+
+function renderBars(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  const metrics = [
+    {label:"Pts general", get:t=>t.pts, dec:0},
+    {label:"Pts local", get:t=>t.homePts, dec:0},
+    {label:"Pts visita", get:t=>t.awayPts, dec:0},
+    {label:"PPG", get:t=>t.ppg, dec:2},
+    {label:"DG", get:t=>t.gd, dec:0},
+    {label:"Win %", get:t=>t.winRate, dec:1, suffix:"%"}
+  ];
+
+  document.getElementById("bars").innerHTML = metrics.map(m => {
+    const va = m.get(a);
+    const vb = m.get(b);
+    const max = Math.max(Math.abs(va),Math.abs(vb),1);
+
+    let winner = "Empate", cls = "draw";
+    if(va > vb){ winner = `Gana ${a.name}`; cls = "win-a"; }
+    if(vb > va){ winner = `Gana ${b.name}`; cls = "win-b"; }
+
+    return `
+      <div class="bar-section">
+        <div class="bar-title">
+          <strong>${m.label}</strong>
+          <span class="metric-winner ${cls}">${winner}</span>
+        </div>
+        <div class="bar-line">
+          <div class="bar-name">${a.name}</div>
+          <div class="bar-track"><div class="bar-fill-a" style="width:${Math.max(va,0)/max*100}%"></div></div>
+          <div class="bar-num">${va.toFixed(m.dec)}${m.suffix||""}</div>
+        </div>
+        <div class="bar-line">
+          <div class="bar-name">${b.name}</div>
+          <div class="bar-track"><div class="bar-fill-b" style="width:${Math.max(vb,0)/max*100}%"></div></div>
+          <div class="bar-num">${vb.toFixed(m.dec)}${m.suffix||""}</div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderTable(){
+  document.getElementById("tableBody").innerHTML = teams().map(t => {
+    const p = tableProb(t);
+    return `
+      <tr>
+        <td>${t.pos}</td>
+        <td><strong>${t.name}</strong></td>
+        <td>${t.gp}</td>
+        <td><strong>${t.pts}</strong></td>
+        <td>${t.homePts}</td>
+        <td>${t.awayPts}</td>
+        <td>${t.w}</td>
+        <td>${t.d}</td>
+        <td>${t.l}</td>
+        <td>${t.gf}</td>
+        <td>${t.ga}</td>
+        <td>${t.gd >= 0 ? "+" : ""}${t.gd}</td>
+        <td>${t.ppg.toFixed(2)}</td>
+        <td>${t.winRate.toFixed(1)}%</td>
+        <td class="good">${p.win}%</td>
+        <td class="mid">${p.draw}%</td>
+        <td class="${p.lose > p.win ? "bad" : ""}">${p.lose}%</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function renderFormBattle(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  const p = matchProb(a,b);
+  const markets = goalMarkets(p.xgA,p.xgB);
+
+  formLogoA.textContent = a.code;
+  formLogoA.style = logoStyle(a.code);
+  formLogoB.textContent = b.code;
+  formLogoB.style = logoStyle(b.code);
+
+  formNameA.textContent = a.name;
+  formNameB.textContent = b.name;
+
+  formPPGA.textContent = a.homePPG.toFixed(2);
+  formPPGB.textContent = b.awayPPG.toFixed(2);
+
+  function dots(form){
+    return String(form || "—").split("-").map(r=>{
+      const cls = r === "G" ? "dot-g" : r === "E" ? "dot-e" : "dot-p";
+      return `<span class="form-dot ${cls}">${r}</span>`;
+    }).join("");
+  }
+
+  formDotsA.innerHTML = dots(a.form);
+  formDotsB.innerHTML = dots(b.form);
+
+  const total = Math.max(a.homePPG + b.awayPPG,0.1);
+  const leftPct = Math.round((a.homePPG / total) * 100);
+  const rightPct = 100 - leftPct;
+
+  advLeft.style.width = `${leftPct}%`;
+  advRight.style.width = `${rightPct}%`;
+  advMarker.style.left = `${leftPct}%`;
+
+  const diff = Math.abs(a.homePPG - b.awayPPG);
+  const better = a.homePPG >= b.awayPPG ? a.name : b.name;
+  const pct = Math.round((diff / Math.max(a.homePPG,b.awayPPG,0.1)) * 100);
+
+  advText.innerHTML = `<span style="color:#86efac">${better}</span> es un ${pct}% mejor`;
+  advSub.textContent = "Comparación por PPG local/visita, forma, fuerza y contexto del partido.";
+
+  mGoals.textContent = `${(p.xgA + p.xgB).toFixed(2)}`;
+  mBTTS.textContent = `${markets.btts}%`;
+  mOver25.textContent = `${markets.over25}%`;
+  mCorners.textContent = p.corners ? p.corners.total.toFixed(2) : "—";
+
+  let pick = "Empate";
+  if(p.winA > p.draw && p.winA > p.winB) pick = a.name;
+  if(p.winB > p.draw && p.winB > p.winA) pick = b.name;
+
+  mPick.textContent = pick;
+}
+function getH2HMatches(a,b){
+  const stats = LEAGUE_STATS[leagueEl.value] || {};
+  const matches = stats.matches || [];
+
+  return matches
+    .filter(m =>
+      (m.home === a.name && m.away === b.name) ||
+      (m.home === b.name && m.away === a.name)
+    )
+    .slice(-20)
+    .reverse();
+}
+
+function renderH2H(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  const matches = getH2HMatches(a,b);
+
+  let winsA = 0;
+  let winsB = 0;
+  let draws = 0;
+  let over25 = 0;
+  let btts = 0;
+
+  matches.forEach(m=>{
+    const totalGoals = m.hg + m.ag;
+
+    if(totalGoals > 2.5) over25++;
+    if(m.hg > 0 && m.ag > 0) btts++;
+
+    const aIsHome = m.home === a.name;
+    const aGoals = aIsHome ? m.hg : m.ag;
+    const bGoals = aIsHome ? m.ag : m.hg;
+
+    if(aGoals > bGoals) winsA++;
+    else if(bGoals > aGoals) winsB++;
+    else draws++;
+  });
+
+  const total = matches.length || 0;
+
+  h2hSubtitle.textContent = `${a.name} vs ${b.name}`;
+  h2hTotal.textContent = `${total} partidos`;
+  h2hTeamA.textContent = a.name;
+  h2hTeamB.textContent = b.name;
+
+  h2hWinsA.textContent = winsA;
+  h2hDraws.textContent = draws;
+  h2hWinsB.textContent = winsB;
+const pctA = total ? Math.round((winsA / total) * 100) : 0;
+const pctD = total ? Math.round((draws / total) * 100) : 0;
+const pctB = total ? 100 - pctA - pctD : 0;
+
+h2hBarLabelA.textContent = a.name;
+h2hBarLabelB.textContent = b.name;
+
+h2hBarA.style.width = `${pctA}%`;
+h2hBarD.style.width = `${pctD}%`;
+h2hBarB.style.width = `${pctB}%`;
+
+h2hPctA.textContent = total ? `${pctA}%` : "—";
+h2hPctD.textContent = total ? `${pctD}%` : "—";
+h2hPctB.textContent = total ? `${pctB}%` : "—";
+  h2hOver25.textContent = total ? `${Math.round(over25 / total * 100)}%` : "—";
+  h2hBTTS.textContent = total ? `${Math.round(btts / total * 100)}%` : "—";
+
+  h2hMatches.innerHTML = total
+    ? matches.slice(0,8).map(m=>`
+      <div class="h2h-match">
+        <div class="h2h-date">${m.date || "—"}</div>
+        <div>${m.home}</div>
+        <div class="h2h-score">${m.hg} - ${m.ag}</div>
+        <div>${m.away}</div>
+        <div class="h2h-season">${m.season}</div>
+      </div>
+    `).join("")
+    : `<div class="notice">No hay enfrentamientos directos encontrados en el historial cargado.</div>`;
+}
+function scoreProbabilityFromXG(xg){
+  return Math.round((1 - poisson(xg, 0)) * 100);
+}
+
+function scoreLevel(prob){
+  if(prob >= 70) return "Alta probabilidad";
+  if(prob >= 50) return "Probabilidad media";
+  return "Baja probabilidad";
+}
+
+function renderScoringChances(){
+  const a = getTeam(teamAEl.value);
+  const b = getTeam(teamBEl.value);
+  if(!a || !b) return;
+
+  const p = matchProb(a,b);
+
+  const probA = scoreProbabilityFromXG(p.xgA);
+  const probB = scoreProbabilityFromXG(p.xgB);
+
+  scoreTeamA.textContent = a.name;
+  scoreTeamB.textContent = b.name;
+
+  scoreNameA.textContent = a.name;
+  scoreNameB.textContent = b.name;
+
+  scoreLogoA.textContent = a.code;
+  scoreLogoA.style = logoStyle(a.code);
+
+  scoreLogoB.textContent = b.code;
+  scoreLogoB.style = logoStyle(b.code);
+
+  scoreStatA.textContent = `xG ${p.xgA.toFixed(2)}`;
+  scoreStatB.textContent = `xG ${p.xgB.toFixed(2)}`;
+
+  scorePctA.textContent = `${probA}%`;
+  scorePctB.textContent = `${probB}%`;
+
+  scoreLevelA.textContent = scoreLevel(probA);
+  scoreLevelB.textContent = scoreLevel(probB);
+
+  scoreFillA.style.width = `${probA}%`;
+  scoreFillB.style.width = `${probB}%`;
+
+  scoreTextA.textContent =
+    `Según el modelo, ${a.name} tiene un ${probA}% de probabilidad de marcar al menos un gol.`;
+
+  scoreTextB.textContent =
+    `Según el modelo, ${b.name} tiene un ${probB}% de probabilidad de marcar al menos un gol.`;
+}
+function refresh(){
+  renderFormBattle();
+  renderH2H();
+  renderScoringChances();
+  renderCards();
+  renderProb();
+  renderBars();
+  renderTable();
+}
+function init(){
+  if(!Object.keys(RAW_DATA).length){
+    document.getElementById("notice").innerHTML =
+      `<div class="notice">No se encontró data/snapshot-data.js. Usando demo.</div>`;
+  }
+
+  Object.keys(DATA).sort((a,b)=>a.localeCompare(b,"es")).forEach(l => {
+    leagueEl.add(new Option(l,l));
+  });
+
+  fillSelects();
+  refresh();
+}
+
+leagueEl.addEventListener("change",()=>{fillSelects();refresh();});
+teamAEl.addEventListener("change",refresh);
+teamBEl.addEventListener("change",refresh);
+
+document.getElementById("swapBtn").addEventListener("click",()=>{
+  const temp = teamAEl.value;
+  teamAEl.value = teamBEl.value;
+  teamBEl.value = temp;
+  refresh();
+});
+
+init();
+</script>
+<script>
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("./sw.js");
+}
+</script>
+</body>
+</html>
